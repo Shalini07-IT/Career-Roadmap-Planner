@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareerQuest — Interactive Roadmap Planner</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Particle Canvas -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+    <span class="theme-icon">🌙</span>
+  </button>
+
+  <!-- ===== LANDING / HERO ===== -->
+  <section class="hero" id="heroSection">
+    <div class="hero-bg-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>Select your path — start your quest</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="typed-text" id="typedText"></span>
+        <span class="typed-cursor">|</span>
+      </h1>
+      <p class="hero-sub">Pick a career, unlock stages, conquer the roadmap. Track every milestone like a skill tree built for developers.</p>
+
+      <!-- Search -->
+      <div class="search-bar-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="careerSearch" class="search-bar" placeholder="Search careers…" autocomplete="off" />
+        <span class="search-clear" id="searchClear">✕</span>
+      </div>
+
+      <!-- Career Grid -->
+      <div class="career-grid" id="careerGrid">
+        <!-- injected by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DASHBOARD ===== -->
+  <section class="dashboard hidden" id="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">⬡</div>
+        <span class="logo-text">CareerQuest</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-btn active" data-panel="roadmap">
+          <span class="nav-icon">🗺</span><span>Roadmap</span>
+        </button>
+        <button class="nav-btn" data-panel="stats">
+          <span class="nav-icon">📊</span><span>Stats</span>
+        </button>
+        <button class="nav-btn" data-panel="badges">
+          <span class="nav-icon">🏆</span><span>Badges</span>
+        </button>
+      </nav>
+
+      <!-- Mini Progress -->
+      <div class="sidebar-progress-wrap">
+        <div class="sidebar-career-name" id="sidebarCareerName">—</div>
+        <div class="sidebar-progress-bar">
+          <div class="sidebar-progress-fill" id="sidebarProgressFill"></div>
+        </div>
+        <div class="sidebar-pct" id="sidebarPct">0%</div>
+      </div>
+
+      <!-- Theme pills -->
+      <div class="theme-pills">
+        <button class="theme-pill active" data-accent="violet" style="--pill:#7c3aed"></button>
+        <button class="theme-pill" data-accent="cyan"   style="--pill:#06b6d4"></button>
+        <button class="theme-pill" data-accent="rose"   style="--pill:#e11d48"></button>
+        <button class="theme-pill" data-accent="amber"  style="--pill:#d97706"></button>
+        <button class="theme-pill" data-accent="emerald" style="--pill:#059669"></button>
+      </div>
+
+      <button class="back-btn" id="backBtn">← New Career</button>
+    </aside>
+
+    <!-- Mobile topbar -->
+    <div class="topbar" id="topbar">
+      <button class="hamburger" id="hamburger">☰</button>
+      <span class="topbar-title" id="topbarTitle">CareerQuest</span>
+      <div class="topbar-pct" id="topbarPct">0%</div>
+    </div>
+
+    <!-- Main panels -->
+    <main class="main-panel">
+
+      <!-- ── ROADMAP PANEL ── -->
+      <div class="panel active" id="panel-roadmap">
+        <header class="panel-header">
+          <div>
+            <h2 class="panel-title" id="roadmapTitle">Roadmap</h2>
+            <p class="panel-sub" id="roadmapSub"></p>
+          </div>
+          <div class="header-stats">
+            <div class="hs-item"><span id="hsTasks">0</span><small>Tasks</small></div>
+            <div class="hs-item"><span id="hsDone">0</span><small>Done</small></div>
+            <div class="hs-item hs-pct"><span id="hsPct">0%</span><small>Complete</small></div>
+          </div>
+        </header>
+
+        <!-- Stage filter tabs -->
+        <div class="stage-tabs" id="stageTabs">
+          <button class="stage-tab active" data-stage="all">All</button>
+          <button class="stage-tab" data-stage="beginner">Beginner</button>
+          <button class="stage-tab" data-stage="intermediate">Intermediate</button>
+          <button class="stage-tab" data-stage="advanced">Advanced</button>
+          <button class="stage-tab" data-stage="expert">Expert</button>
+        </div>
+
+        <!-- Roadmap tree -->
+        <div class="roadmap-tree" id="roadmapTree">
+          <!-- injected by JS -->
+        </div>
+      </div>
+
+      <!-- ── STATS PANEL ── -->
+      <div class="panel" id="panel-stats">
+        <header class="panel-header">
+          <div>
+            <h2 class="panel-title">Your Progress</h2>
+            <p class="panel-sub">Real-time completion analytics</p>
+          </div>
+        </header>
+        <div class="stats-grid">
+          <div class="stat-card glassy" id="statOverall">
+            <div class="stat-circle-wrap">
+              <svg class="stat-circle" viewBox="0 0 120 120">
+                <circle class="sc-track" cx="60" cy="60" r="50"/>
+                <circle class="sc-fill" id="overallCircle" cx="60" cy="60" r="50"
+                  stroke-dasharray="314" stroke-dashoffset="314"/>
+              </svg>
+              <div class="stat-circle-label">
+                <span id="overallPct">0%</span>
+                <small>Overall</small>
+              </div>
+            </div>
+          </div>
+          <div class="stage-bars" id="stageBars">
+            <!-- filled by JS -->
+          </div>
+        </div>
+        <div class="activity-section">
+          <h3 class="section-label">Stage Breakdown</h3>
+          <div class="activity-list" id="activityList"></div>
+        </div>
+      </div>
+
+      <!-- ── BADGES PANEL ── -->
+      <div class="panel" id="panel-badges">
+        <header class="panel-header">
+          <div>
+            <h2 class="panel-title">Achievements</h2>
+            <p class="panel-sub">Unlock badges as you progress</p>
+          </div>
+        </header>
+        <div class="badges-grid" id="badgesGrid">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+    </main>
+  </section>
+
+  <!-- Confetti container -->
+  <div class="confetti-container" id="confettiContainer"></div>
+
+  <!-- Stage unlock toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
